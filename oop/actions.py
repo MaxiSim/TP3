@@ -16,7 +16,7 @@ def clip(value: numeric, minimum: numeric, maximum: numeric) -> numeric:
     return value
 
 
-def attack(dungeon, player, ...): # completar
+def attack(dungeon, player, gnome):#completar
     # completar
     raise NotImplementedError
 

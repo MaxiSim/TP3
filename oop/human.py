@@ -22,3 +22,4 @@ class Human(Player):
 
     def has_sword(self):
         # completar
+        pass

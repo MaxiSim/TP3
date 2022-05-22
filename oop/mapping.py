@@ -1,5 +1,6 @@
 import random
 from typing import Optional
+from human import Human
 
 import player
 import items
@@ -116,7 +117,7 @@ class Level:
             for j, cell in enumerate(row):
                 if (j, i) == player.loc():
                     print(player.face, end='')
-                elif (i, j) in self.items:
+                elif (j, i) in self.items:
                     print(self.items[(i, j)][0].face, end='')
                 else:
                     print(cell.face, end='')
