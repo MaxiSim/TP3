@@ -27,23 +27,28 @@ def move_to(dungeon: mapping.Dungeon, player: player.Player, location: tuple[num
 
 
 def move_up(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+    playerloc = player.loc()
+    xy = (playerloc[0], playerloc[1]-1)
+    return player.move_to(xy)
 
 
 def move_down(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+    playerloc = player.loc()
+    xy = (playerloc[0], playerloc[1]+1)
+    return player.move_to(xy)
+    
 
 
 def move_left(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+    playerloc = player.loc()
+    xy = (playerloc[0]-1, playerloc[1])
+    return player.move_to(xy)
 
 
 def move_right(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+    playerloc = player.loc()
+    xy = (playerloc[0]+1, playerloc[1])
+    return player.move_to(xy)
 
 
 def climb_stair(dungeon: mapping.Dungeon, player: player.Player):

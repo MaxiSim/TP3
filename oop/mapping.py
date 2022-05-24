@@ -1,5 +1,7 @@
 import random
 from typing import Optional
+
+from sympy import Le
 from human import Human
 
 import player
@@ -104,8 +106,10 @@ class Level:
         items = self.items.get((i, j), [])
         items.append(item)
         self.items[(i, j)] = items
+        
+        # gnome: player.Player
 
-    def render(self, player: player.Player):
+    def render(self, player: player.Player, gnome: player.Player ):
         """Draw the map onto the terminal, including player and items. Player must have a loc() method, returning its
         location, and a face attribute. All items in the map must have a face attribute which is going to be shown. If
         there are multiple items in one location, only one will be rendered.
@@ -117,6 +121,8 @@ class Level:
             for j, cell in enumerate(row):
                 if (j, i) == player.loc():
                     print(player.face, end='')
+                elif (j,i) == gnome.loc():
+                    print(gnome.face, end = '')
                 elif (j, i) in self.items:
                     print(self.items[(i, j)][0].face, end='')
                 else:
@@ -173,16 +179,33 @@ class Level:
         # completar
         raise NotImplementedError
 
-    def are_connected(self, initial: Location, end: Location) -> bool:
+    def are_connected(self, initial: Location, end: Location, path_to) -> bool:
         """Check if there is walkable path between initial location and end location."""
-        # completar
         raise NotImplementedError
+        if initial == end:
+            return True
+        else:
+            if self.is_walkable(initial[0], initial[1]-1) == True and (initial[0], initial[1]-1) not in path_to:
+                return self.are_connected((initial[0], initial[1]+1), end)
+            elif self.is_walkable(initial[0]+1, initial[1]) == True and (initial[0]+1, initial[1]) not in path_to:
+                return self.are_connected((initial[0]+1, initial[1]), end)
+            elif self.is_walkable(initial[0], initial[1]+1) == True and (initial[0], initial[1]+1) not in path_to:
+                return self.are_connected((initial[0], initial[1]+1), end)
+            elif self.is_walkable(initial[0]-1, initial[1]) == True and (initial[0]-1, initial[1]) not in path_to:
+                return self.are_connected((initial[0]-1, initial[1]), end)
+            elif self.is_walkable(initial[0], initial[1]-1) == False and self.is_walkable(initial[0]+1, initial[1]) == False and self.is_walkable(initial[0], initial[1]+1) == False and self.is_walkable(initial[0]-1, initial[1]) == False:
+                return False
+            else:
+                return self.are_connected(path_to[0], end)
+                
 
     def get_path(self, initial: Location, end: Location) -> bool:
         """Return a sequence of locations between initial location and end location, if it exits."""
-        # completar
         raise NotImplementedError
-
+        path_to = []
+        path_to += initial
+        return 
+        
 
 class Dungeon:
     """Dungeon(rows: int, columns: int, levels: int = 3) -> Dungeon
@@ -215,12 +238,12 @@ class Dungeon:
         # Ubicar escalera del nivel inferior
         self.dungeon[-1].add_stair_up(self.stairs_up[-1])
 
-    def render(self, player: player.Player):
+    def render(self, player: player.Player, gnome:player.Player):
         """Draw current level onto the terminal, including player and items. Player must have a loc() method, returning
         its location, and a face attribute. All items in the map must have a face attribute which is going to be shown.
         If there are multiple items in one location, only one will be rendered.
         """
-        self.dungeon[self.level].render(player)
+        self.dungeon[self.level].render(player, gnome)
 
     def find_free_tile(self) -> Location:
         """Randomly searches for a free location inside the level's map.
