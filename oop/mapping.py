@@ -34,7 +34,8 @@ AIR = Tile(' ')
 WALL = Tile('▓', False)
 STAIR_UP = Tile('<')
 STAIR_DOWN = Tile('>')
-
+LIMIT_V = Tile('|', False)
+LIMIT_H = Tile('-', False)
 
 class Level:
     """Level(rows: int, columns: int) -> Level
@@ -181,7 +182,7 @@ class Level:
 
     def are_connected(self, initial: Location, end: Location, path_to) -> bool:
         """Check if there is walkable path between initial location and end location."""
-        raise NotImplementedError
+        # raise NotImplementedError
         if initial == end:
             return True
         else:

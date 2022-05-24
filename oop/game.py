@@ -40,7 +40,7 @@ if __name__ == "__main__":
         # Hacer algo con keys:
         if key[-1] == 'w':  
             actions.move_up(dungeon, player)
-        if key[-1] == 'd':
+        if key[-1] == 'd': 
             actions.move_right(dungeon, player)
         if key[-1] == 's':
             actions.move_down(dungeon, player)
