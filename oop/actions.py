@@ -1,5 +1,5 @@
 from typing import Union
-
+import random
 
 import mapping
 import player
@@ -15,6 +15,18 @@ def clip(value: numeric, minimum: numeric, maximum: numeric) -> numeric:
         return maximum
     return value
 
+def move_gnome(dungeon, player, gnome):
+    direction = random.randint(1,5)
+    if direction == 1:
+        return move_up(dungeon, gnome)
+    elif direction == 2:
+        return move_right(dungeon, gnome)
+    elif direction == 3:
+        return move_down(dungeon, gnome)
+    elif direction == 4:
+        return move_left(dungeon, gnome)
+    elif direction == 5:
+        return None
 
 def attack(dungeon, player, gnome):#completar
     # completar
@@ -22,7 +34,7 @@ def attack(dungeon, player, gnome):#completar
 
 
 def move_to(dungeon: mapping.Dungeon, player: player.Player, location: tuple[numeric, numeric]):
-    raise NotImplementedError
+    return player.move_to(location)
     
     
     
@@ -67,12 +79,19 @@ def move_right(dungeon: mapping.Dungeon, player: player.Player):
 
 def climb_stair(dungeon: mapping.Dungeon, player: player.Player):
     # completar
-    raise NotImplementedError
+    # raise NotImplementedError
+    if player.loc() == dungeon.index(mapping.STAIR_UP) and dungeon.level != 0:
+        return dungeon.set_level(0), move_to(dungeon, player, dungeon.index(mapping.STAIR_DOWN))
+    else:
+        return dungeon.set_level(0)
 
 
 def descend_stair(dungeon: mapping.Dungeon, player: player.Player):
     # completar
-    raise NotImplementedError
+    # raise NotImplementedError
+    if player.loc() == dungeon.index(mapping.STAIR_DOWN):
+        return dungeon.set_level(1), move_to(dungeon,player,dungeon.index(mapping.STAIR_UP))
+    
 
 
 def pickup(dungeon: mapping.Dungeon, player: player.Player):

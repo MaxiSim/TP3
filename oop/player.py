@@ -12,7 +12,11 @@ class Player:
     
     @property
     def hp(self):
-        return self._hp
+        return f'({self._hp}/{self.max_hp})'
+    
+    @property
+    def location(self):
+        return f'({self.x}/{self.y})'
     
     @hp.setter
     def hp(self, value):

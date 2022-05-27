@@ -110,7 +110,7 @@ class Level:
         
         # gnome: player.Player
 
-    def render(self, player: player.Player, gnome: player.Player ):
+    def render(self, player: player.Player, gnome: player.Player, level: int):
         """Draw the map onto the terminal, including player and items. Player must have a loc() method, returning its
         location, and a face attribute. All items in the map must have a face attribute which is going to be shown. If
         there are multiple items in one location, only one will be rendered.
@@ -130,6 +130,7 @@ class Level:
                     print(cell.face, end='')
             print("|")
         print("-" + "-" * len(self.tiles[0]) + "-")
+        print(f'Player:{player}     HP:{player.hp}      Location:{player.location}      Level: {level}')
 
     def is_walkable(self, location: Location):
         """Check if a player can walk through a given location."""
@@ -182,19 +183,23 @@ class Level:
 
     def are_connected(self, initial: Location, end: Location, path_to) -> bool:
         """Check if there is walkable path between initial location and end location."""
-        # raise NotImplementedError
+        raise NotImplementedError
+        Cell_Up = (initial[0], initial[1]-1)
+        Cell_Right = (initial[0]+1, initial[1])
+        Cell_Down = (initial[0], initial[1]+1)
+        Cell_Left = (initial[0]-1, initial[1])
         if initial == end:
             return True
         else:
-            if self.is_walkable(initial[0], initial[1]-1) == True and (initial[0], initial[1]-1) not in path_to:
-                return self.are_connected((initial[0], initial[1]+1), end)
-            elif self.is_walkable(initial[0]+1, initial[1]) == True and (initial[0]+1, initial[1]) not in path_to:
-                return self.are_connected((initial[0]+1, initial[1]), end)
-            elif self.is_walkable(initial[0], initial[1]+1) == True and (initial[0], initial[1]+1) not in path_to:
-                return self.are_connected((initial[0], initial[1]+1), end)
-            elif self.is_walkable(initial[0]-1, initial[1]) == True and (initial[0]-1, initial[1]) not in path_to:
-                return self.are_connected((initial[0]-1, initial[1]), end)
-            elif self.is_walkable(initial[0], initial[1]-1) == False and self.is_walkable(initial[0]+1, initial[1]) == False and self.is_walkable(initial[0], initial[1]+1) == False and self.is_walkable(initial[0]-1, initial[1]) == False:
+            if self.is_walkable(Cell_Up) == True and (Cell_Up) not in path_to:
+                return self.are_connected(Cell_Up, end)
+            elif self.is_walkable(Cell_Right) == True and (Cell_Right) not in path_to:
+                return self.are_connected(Cell_Right, end)
+            elif self.is_walkable(Cell_Down) == True and (Cell_Down) not in path_to:
+                return self.are_connected(Cell_Down, end)
+            elif self.is_walkable(Cell_Left) == True and (Cell_Left) not in path_to:
+                return self.are_connected(Cell_Left, end)
+            elif self.is_walkable(Cell_Up) == False and self.is_walkable(Cell_Right) == False and self.is_walkable(Cell_Down) == False and self.is_walkable(Cell_Left) == False:
                 return False
             else:
                 return self.are_connected(path_to[0], end)
@@ -204,7 +209,7 @@ class Level:
         """Return a sequence of locations between initial location and end location, if it exits."""
         raise NotImplementedError
         path_to = []
-        path_to += initial
+        
         return 
         
 
@@ -244,7 +249,7 @@ class Dungeon:
         its location, and a face attribute. All items in the map must have a face attribute which is going to be shown.
         If there are multiple items in one location, only one will be rendered.
         """
-        self.dungeon[self.level].render(player, gnome)
+        self.dungeon[self.level].render(player, gnome, self.level)
 
     def find_free_tile(self) -> Location:
         """Randomly searches for a free location inside the level's map.
@@ -286,3 +291,13 @@ class Dungeon:
     def is_free(self, xy: Location) -> bool:
         """NOT IMPLEMENTED. Check if a given location is free of other entities. See Level.is_free()."""
         return self.dungeon[self.level].is_free(xy)
+
+    def set_level(self, value):
+        if value == 1:
+            self.level += 1
+        elif value == 0:
+            self.level -= 1
+    
+    def get_level(self):
+        return self.level
+    
