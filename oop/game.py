@@ -26,7 +26,7 @@ if __name__ == "__main__":
     pickaxe = PickAxe('PickAxe','7')
 
     dungeon = mapping.Dungeon(ROWS, COLUMNS, 3)
-    # dungeon.add_item(pickaxe)
+    dungeon.add_item(pickaxe, 0, dungeon.find_free_tile())
     
     # Agregarle cosas al dungeon, cosas que no se creen automáticamente al crearlo (por ejemplo, ya se crearon las escaleras).
 
@@ -35,6 +35,7 @@ if __name__ == "__main__":
         turns += 1
         # render map
         dungeon.render(player, gnome)
+        
         # print(mapping.Level.are_connected((random.randint(0,COLUMNS), random.randint(0, ROWS)), (random.randint(0,COLUMNS), random.randint(0, ROWS))))
         # read key
         key = magic.read_single_keypress()
