@@ -104,9 +104,11 @@ class Level:
             j, i = self.find_free_tile()
         else:
             j, i = location
-        items = self.items.get((i, j), [])
+        items = self.items.get((j, i), [])
         items.append(item)
-        self.items[(i, j)] = items
+        self.items[(j, i)] = items
+        location = (j,i)
+        return location
         
         # gnome: player.Player
 
@@ -125,7 +127,7 @@ class Level:
                 elif (j,i) == gnome.loc():
                     print(gnome.face, end = '')
                 elif (j, i) in self.items:
-                    print(self.items[(i, j)][0].face, end='')
+                    print(self.items[(j, i)][0].face, end='')
                 else:
                     print(cell.face, end='')
             print("|")
@@ -162,7 +164,7 @@ class Level:
 
     def get_items(self, xy: Location) -> list[items.Item]:
         """Get a list of all items at a given location. Removes the items from that location."""
-        j, i = xy
+        i, j = xy
         if (i, j) in self.items:
             items = self.items[(i, j)]
             del(self.items[(i, j)])
@@ -183,13 +185,14 @@ class Level:
 
     def are_connected(self, initial: Location, end: Location,  not_walkable : list = [], path_to: list = []) -> bool:
         """Check if there is walkable path between initial location and end location."""
-        raise NotImplementedError
+        # raise NotImplementedError
         Cell_Up = (initial[0], initial[1]-1)
         Cell_Right = (initial[0]+1, initial[1])
         Cell_Down = (initial[0], initial[1]+1)
         Cell_Left = (initial[0]-1, initial[1])
         if initial == end:
-            return True, path_to.append(end)
+            result = (True, path_to.append(end))
+            return result
         else:
             if self.is_walkable(Cell_Up) == True and Cell_Up not in path_to and Cell_Up not in not_walkable:
                 return self.are_connected(Cell_Up, end, not_walkable, path_to.append(initial))

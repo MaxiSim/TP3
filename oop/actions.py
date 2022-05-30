@@ -1,6 +1,7 @@
 from typing import Union
 import random
 
+import human
 import mapping
 import player
 
@@ -43,7 +44,8 @@ def move_to(dungeon: mapping.Dungeon, player: player.Player, location: tuple[num
 def move_up(dungeon: mapping.Dungeon, player: player.Player):
     playerloc = player.loc()
     xy = (playerloc[0], playerloc[1]-1)
-    if dungeon.is_walkable(xy) == True and xy[1]>=0:
+    if (dungeon.is_walkable(xy) == True or player.tool != None)and xy[1]>=0:
+        dungeon.dig(xy)
         return player.move_to(xy)
     else:
         return player.move_to(player.loc())
@@ -52,7 +54,8 @@ def move_up(dungeon: mapping.Dungeon, player: player.Player):
 def move_down(dungeon: mapping.Dungeon, player: player.Player):
     playerloc = player.loc()
     xy = (playerloc[0], playerloc[1]+1)
-    if dungeon.is_walkable(xy) == True and xy[1]<=24:
+    if (dungeon.is_walkable(xy) == True or player.tool != None)and xy[1]<=24:
+        dungeon.dig(xy)
         return player.move_to(xy)
     else:
         return player.move_to(player.loc())
@@ -62,7 +65,8 @@ def move_down(dungeon: mapping.Dungeon, player: player.Player):
 def move_left(dungeon: mapping.Dungeon, player: player.Player):
     playerloc = player.loc()
     xy = (playerloc[0]-1, playerloc[1])
-    if dungeon.is_walkable(xy) == True and xy[0]>=0:
+    if (dungeon.is_walkable(xy) == True or player.tool != None) and xy[0]>=0:
+        dungeon.dig(xy)
         return player.move_to(xy)
     else:
         return player.move_to(player.loc())
@@ -71,15 +75,14 @@ def move_left(dungeon: mapping.Dungeon, player: player.Player):
 def move_right(dungeon: mapping.Dungeon, player: player.Player):
     playerloc = player.loc()
     xy = (playerloc[0]+1, playerloc[1])
-    if dungeon.is_walkable(xy) == True and xy[0]<= 79:
+    if (dungeon.is_walkable(xy) == True or player.tool != None) and xy[0]<= 79:
+        dungeon.dig(xy)
         return player.move_to(xy)
     else:
         return player.move_to(player.loc())
 
 
 def climb_stair(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    # raise NotImplementedError
     if player.loc() == dungeon.index(mapping.STAIR_UP) and dungeon.level != 0:
         return dungeon.set_level(0), move_to(dungeon, player, dungeon.index(mapping.STAIR_DOWN))
     else:
@@ -87,13 +90,15 @@ def climb_stair(dungeon: mapping.Dungeon, player: player.Player):
 
 
 def descend_stair(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    # raise NotImplementedError
     if player.loc() == dungeon.index(mapping.STAIR_DOWN):
         return dungeon.set_level(1), move_to(dungeon,player,dungeon.index(mapping.STAIR_UP))
     
-
-
+    
 def pickup(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+    if dungeon.get_items(player.loc()) != None:
+        if 'treasure' in dungeon.get_items(player.loc()):
+            player.has_treasure()
+        elif 'tool' in dungeon.get_items(player.loc()):
+            player.has_tool()
+        elif 'weapon' in dungeon.get_items(player.loc()):
+            player.has_sword()
