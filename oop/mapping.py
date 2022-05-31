@@ -107,8 +107,7 @@ class Level:
         items = self.items.get((j, i), [])
         items.append(item)
         self.items[(j, i)] = items
-        location = (j,i)
-        return location
+        
         
         # gnome: player.Player
 
@@ -186,27 +185,37 @@ class Level:
     def are_connected(self, initial: Location, end: Location,  not_walkable : list = [], path_to: list = []) -> bool:
         """Check if there is walkable path between initial location and end location."""
         # raise NotImplementedError
-        Cell_Up = (initial[0], initial[1]-1)
-        Cell_Right = (initial[0]+1, initial[1])
-        Cell_Down = (initial[0], initial[1]+1)
-        Cell_Left = (initial[0]-1, initial[1])
-        if initial == end:
+        initial_aux = initial
+        
+        Cell_Up = (initial_aux[0], initial_aux[1]-1)
+        Cell_Right = (initial_aux[0]+1, initial_aux[1])
+        Cell_Down = (initial_aux[0], initial_aux[1]+1)
+        Cell_Left = (initial_aux[0]-1, initial_aux[1])
+        print(type(initial))
+        print(type(initial_aux))
+        print(type(Cell_Up))
+        print(type(Cell_Down))
+        print(type(Cell_Left))
+        print(type(Cell_Right))
+        print(path_to)
+        print(not_walkable)
+        if initial_aux == end:
             result = (True, path_to.append(end))
             return result
         else:
             if self.is_walkable(Cell_Up) == True and Cell_Up not in path_to and Cell_Up not in not_walkable:
-                return self.are_connected(Cell_Up, end, not_walkable, path_to.append(initial))
+                return self.are_connected(Cell_Up, end, not_walkable, path_to.append(initial_aux))
             elif self.is_walkable(Cell_Right) == True and Cell_Right not in path_to and Cell_Right not in not_walkable:
-                return self.are_connected(Cell_Right, end, not_walkable, path_to.append(initial))
+                return self.are_connected(Cell_Right, end, not_walkable, path_to.append(initial_aux))
             elif self.is_walkable(Cell_Down) == True and Cell_Down not in path_to and Cell_Down not in not_walkable:
-                return self.are_connected(Cell_Down, end, not_walkable, path_to.append(initial))
+                return self.are_connected(Cell_Down, end, not_walkable, path_to.append(initial_aux))
             elif self.is_walkable(Cell_Left) == True and Cell_Left not in path_to and Cell_Left not in not_walkable:
-                return self.are_connected(Cell_Left, end, not_walkable, path_to.append(initial))
+                return self.are_connected(Cell_Left, end, not_walkable, path_to.append(initial_aux))
             elif (not self.is_walkable(Cell_Up) or Cell_Up in not_walkable)and (not self.is_walkable(Cell_Right) or Cell_Right in not_walkable) and (not self.is_walkable(Cell_Down) or Cell_Down in not_walkable) and (not self.is_walkable(Cell_Left) or Cell_Left in not_walkable):
                 if len(path_to) == 0:
                     return False
                 else:
-                    return self.are_connected(path_to[0], end, not_walkable.append(initial), path_to = [])
+                    return self.are_connected(path_to[0], end, not_walkable.append(initial_aux), path_to = [])
 
     def get_path(self, initial: Location, end: Location) -> bool:
         """Return a sequence of locations between initial location and end location, if it exits."""
@@ -303,4 +312,8 @@ class Dungeon:
     
     def get_level(self):
         return self.level
+    
+    def are_connected(self, initial: Location, end: Location) -> bool:
+        """Check if two locations are connected. See Level.are_connected()."""
+        return self.dungeon[self.level].are_connected(initial, end)
     

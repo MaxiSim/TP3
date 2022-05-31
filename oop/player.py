@@ -53,10 +53,10 @@ class Player:
         self.treasure = 'amulet'
         
     def get_tool(self):
-        if self.tool != None:
+        if self.tool == 'pickaxe':
             return True
     def get_treasure(self):
-        if self.treasure != None:
+        if self.treasure == 'amulet':
             return True
     
     def __str__(self):

@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 import time
-
 import mapping
 import magic
 
 
 import random
-import functions
+from functions import check_path
 from gnome import Gnome
 from human import Human
 from items import PickAxe, Sword, Amulet
@@ -24,19 +23,20 @@ if __name__ == "__main__":
     # initial parameters
     level = 0
     # initial locations may be random generated
-    player = Human('Maxi', (random.randint(10,COLUMNS-10),random.randint(1,ROWS-1)),None)
-    gnome = Gnome('Basic', (random.randint(10,COLUMNS-10), random.randint(1,ROWS-1)), None)
+    player = Human('Maxi',(0,0),None)
+    gnome = Gnome('Basic', (random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)), None)
     pickaxe = PickAxe('PickAxe','7')
     sword = Sword('Sword','/',5,10)
     amulet = Amulet('Amulet','8')
 
     dungeon = mapping.Dungeon(ROWS, COLUMNS, 3)
-    pickaxe_loc = dungeon.add_item(pickaxe)
+    # dungeon.add_item(pickaxe,0)
     dungeon.add_item(sword, 2)
-    dungeon.add_item(amulet, 3)
+    dungeon.add_item(amulet, 1)
     
+    check_path(dungeon,(random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)) ,(random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)) )
     
-    # check_path(player.loc, pickaxe_loc)
+   
         
         
     # Agregarle cosas al dungeon, cosas que no se creen automáticamente al crearlo (por ejemplo, ya se crearon las escaleras).
@@ -71,12 +71,17 @@ if __name__ == "__main__":
         
      
         actions.pickup(dungeon, player)
+        # print(player.treasure, player.tool)
+       
+        # print(type(dungeon.get_items((50,20))[0]))
         
-    if dungeon.level == -1 and player.treasure() != None:
+    if dungeon.level == -1 and player.get_treasure():
         print('You win!')
     else:
         print('You were killed by lightning!')
         print('GAME OVER')
+        
+    
         
 
 
