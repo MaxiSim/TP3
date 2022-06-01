@@ -8,7 +8,7 @@ import random
     # return xy
 
 def check_path(dungeon: mapping.Dungeon, initial: tuple, end: tuple):
-    if dungeon.are_connected(initial, end)[0] == True:
+    if dungeon.are_connected(initial, end) == True:
         print('entra')
         # player.move_to(initial)
         # dungeon.add_item(pickaxe,0, end)
@@ -17,6 +17,9 @@ def check_path(dungeon: mapping.Dungeon, initial: tuple, end: tuple):
         # return 
         print('entra en false')
         # check_path(dungeon, (random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)), (random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)))
+        
+    else:
+        print('no entra')
     
         
     
