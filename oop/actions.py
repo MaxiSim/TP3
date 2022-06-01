@@ -42,45 +42,41 @@ def move_to(dungeon: mapping.Dungeon, player: player.Player, location: tuple[num
     
 
 
-def move_up(dungeon: mapping.Dungeon, player: player.Player):
+def move_up(dungeon: mapping.Dungeon, player: human.Human):
     playerloc = player.loc()
     xy = (playerloc[0], playerloc[1]-1)
-    if (dungeon.is_walkable(xy) == True or player.get_tool != None)and xy[1]>=0:
+    if (dungeon.is_walkable(xy) == True or type(player.get_tool()) == items.PickAxe)and xy[1]>=0:
         dungeon.dig(xy)
         return player.move_to(xy)
-    else:
-        return player.move_to(player.loc())
+    return player.move_to(player.loc())
 
 
-def move_down(dungeon: mapping.Dungeon, player: player.Player):
+def move_down(dungeon: mapping.Dungeon, player: human.Human):
     playerloc = player.loc()
     xy = (playerloc[0], playerloc[1]+1)
-    if (dungeon.is_walkable(xy) == True or player.get_tool != None)and xy[1]<=24:
+    if (dungeon.is_walkable(xy) == True or type(player.get_tool()) == items.PickAxe) and xy[1]<=24:
         dungeon.dig(xy)
         return player.move_to(xy)
-    else:
-        return player.move_to(player.loc())
+    return player.move_to(player.loc())
     
 
 
-def move_left(dungeon: mapping.Dungeon, player: player.Player):
+def move_left(dungeon: mapping.Dungeon, player: human.Human):
     playerloc = player.loc()
     xy = (playerloc[0]-1, playerloc[1])
-    if (dungeon.is_walkable(xy) == True or player.get_tool != None) and xy[0]>=0:
+    if (dungeon.is_walkable(xy) == True or type(player.get_tool()) == items.PickAxe)and xy[0]>=0:
         dungeon.dig(xy)
         return player.move_to(xy)
-    else:
-        return player.move_to(player.loc())
+    return player.move_to(player.loc())
 
 
-def move_right(dungeon: mapping.Dungeon, player: player.Player):
+def move_right(dungeon: mapping.Dungeon, player: human.Human):
     playerloc = player.loc()
     xy = (playerloc[0]+1, playerloc[1])
-    if (dungeon.is_walkable(xy) == True or player.get_tool != None) and xy[0]<= 79:
+    if (dungeon.is_walkable(xy) == True or type(player.get_tool()) == items.PickAxe)  and xy[0]<= 79:
         dungeon.dig(xy)
         return player.move_to(xy)
-    else:
-        return player.move_to(player.loc())
+    return player.move_to(player.loc())
 
 
 def climb_stair(dungeon: mapping.Dungeon, player: player.Player):
@@ -95,12 +91,12 @@ def descend_stair(dungeon: mapping.Dungeon, player: player.Player):
         return dungeon.set_level(1), move_to(dungeon,player,dungeon.index(mapping.STAIR_UP))
     
     
-def pickup(dungeon: mapping.Dungeon, player: player.Player):
+def pickup(dungeon: mapping.Dungeon, player: human.Human):
     element = dungeon.get_items(player.loc())
     if len(element) != 0:
         if type(element[0]) == items.Amulet:
-            player.has_treasure()
+            player.has_treasure(element)
         elif type(element[0]) == items.PickAxe:
-            player.has_tool()
+            player.has_tool(element)
         elif type(element[0]) == items.Sword:
-            player.has_sword()
+            player.has_sword(element)

@@ -184,45 +184,52 @@ class Level:
 
     def are_connected(self, initial: Location, end: Location,  not_walkable : list = [], path_to: list = []) -> bool:
         """Check if there is walkable path between initial location and end location."""
-        # raise NotImplementedError
-        initial_aux = initial
+        # if len(self.get_path(initial, end)) == 0:
+        #     return False
+       
+        Up = (initial[0], initial[1]-1)
+        Right = (initial[0]+1, initial[1])
+        Down = (initial[0], initial[1]+1)
+        Left = (initial[0]-1, initial[1])
+
+        # d = [Up, Right, Down, Left]
+        # result = False
+
+        # for direction in d:
+        #     if self.is_walkable(direction):
+        #         if direction not in not_walkable:
+        #             t = self.are_connected(direction, end, not_walkable + initial , path_to + initial)
+        #             if t:
+        #                 return True 
+        # return result
+      
+        if initial == end:
+                    path_to.append(end)
+                    return True
         
-        Cell_Up = (initial_aux[0], initial_aux[1]-1)
-        Cell_Right = (initial_aux[0]+1, initial_aux[1])
-        Cell_Down = (initial_aux[0], initial_aux[1]+1)
-        Cell_Left = (initial_aux[0]-1, initial_aux[1])
-        print(type(initial))
-        print(type(initial_aux))
-        print(type(Cell_Up))
-        print(type(Cell_Down))
-        print(type(Cell_Left))
-        print(type(Cell_Right))
-        print(path_to)
-        print(not_walkable)
-        if initial_aux == end:
-            result = (True, path_to.append(end))
-            return result
         else:
-            if self.is_walkable(Cell_Up) == True and Cell_Up not in path_to and Cell_Up not in not_walkable:
-                return self.are_connected(Cell_Up, end, not_walkable, path_to.append(initial_aux))
-            elif self.is_walkable(Cell_Right) == True and Cell_Right not in path_to and Cell_Right not in not_walkable:
-                return self.are_connected(Cell_Right, end, not_walkable, path_to.append(initial_aux))
-            elif self.is_walkable(Cell_Down) == True and Cell_Down not in path_to and Cell_Down not in not_walkable:
-                return self.are_connected(Cell_Down, end, not_walkable, path_to.append(initial_aux))
-            elif self.is_walkable(Cell_Left) == True and Cell_Left not in path_to and Cell_Left not in not_walkable:
-                return self.are_connected(Cell_Left, end, not_walkable, path_to.append(initial_aux))
-            elif (not self.is_walkable(Cell_Up) or Cell_Up in not_walkable)and (not self.is_walkable(Cell_Right) or Cell_Right in not_walkable) and (not self.is_walkable(Cell_Down) or Cell_Down in not_walkable) and (not self.is_walkable(Cell_Left) or Cell_Left in not_walkable):
+            if self.is_walkable(Up) == True and Up not in path_to and Up not in not_walkable:
+                path_to.append(initial)
+                return self.are_connected(Up, end, not_walkable, path_to)
+            elif self.is_walkable(Right) == True and Right not in path_to and Right not in not_walkable:
+                path_to.append(initial)
+                return self.are_connected(Right, end, not_walkable, path_to)
+            elif self.is_walkable(Down) == True and Down not in path_to and Down not in not_walkable:
+                path_to.append(initial)
+                return self.are_connected(Down, end, not_walkable, path_to)
+            elif self.is_walkable(Left) == True and Left not in path_to and Left not in not_walkable:
+                path_to.append(initial)
+                return self.are_connected(Left, end, not_walkable, path_to)
+            elif (not self.is_walkable(Up) or Up in not_walkable)and (not self.is_walkable(Right) or Right in not_walkable) and (not self.is_walkable(Down) or Down in not_walkable) and (not self.is_walkable(Left) or Left in not_walkable):
                 if len(path_to) == 0:
                     return False
                 else:
-                    return self.are_connected(path_to[0], end, not_walkable.append(initial_aux), path_to = [])
+                    not_walkable.append(initial)
+                    return self.are_connected(path_to[0], end, not_walkable, path_to = [])
 
-    def get_path(self, initial: Location, end: Location) -> bool:
+    def get_path(self, initial: Location, end: Location) -> list:
         """Return a sequence of locations between initial location and end location, if it exits."""
-        raise NotImplementedError
-        path_to = []
-        
-        return 
+        pass
         
 
 class Dungeon:

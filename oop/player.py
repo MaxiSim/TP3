@@ -1,7 +1,7 @@
 import random
 
 class Player:
-    def __init__(self, name, xy, face, weapon = None, hit_points=50, tool = None, treasure = None):
+    def __init__(self, name, xy, face, weapon = None, hit_points=50):
         self.name = name
         self.x, self.y = xy
         self._hp = hit_points
@@ -9,8 +9,6 @@ class Player:
         self.alive = True
         self.face = face
         self.weapon = weapon
-        self.tool = tool
-        self.treasure = treasure
     
     @property
     def hp(self):
@@ -46,18 +44,6 @@ class Player:
     def has_sword(self):
         self.wapon = 'sword'
         
-    def has_tool(self):
-        self.tool = 'pickaxe'
-        
-    def has_treasure(self):
-        self.treasure = 'amulet'
-        
-    def get_tool(self):
-        if self.tool == 'pickaxe':
-            return True
-    def get_treasure(self):
-        if self.treasure == 'amulet':
-            return True
     
     def __str__(self):
         return self.name
