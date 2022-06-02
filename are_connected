@@ -1,0 +1,35 @@
+def are_connected(self, initial: Location, end: Location,  not_walkable : list = [], path_to: list = []) -> bool:
+        """Check if there is walkable path between initial location and end location."""
+        if initial == end:
+                    path_to.append(end)
+                    return True
+        
+        Up = (initial[0], initial[1]-1)
+        Right = (initial[0]+1, initial[1])
+        Down = (initial[0], initial[1]+1)
+        Left = (initial[0]-1, initial[1])
+
+        if self.is_walkable(Up) and (Up not in path_to) and (Up not in not_walkable) and Up[1]>=0:
+            path_to.append(initial)
+            return self.are_connected(Up, end, not_walkable, path_to)
+
+        elif self.is_walkable(Right) and (Right not in path_to) and (Right not in not_walkable) and Right[0]<=80:
+            path_to.append(initial)
+            return self.are_connected(Right, end, not_walkable, path_to)
+
+        elif self.is_walkable(Down) and (Down not in path_to) and (Down not in not_walkable) and Down[1]<=25:
+            path_to.append(initial)
+            return self.are_connected(Down, end, not_walkable, path_to)
+            
+        elif self.is_walkable(Left) and (Left not in path_to) and (Left not in not_walkable) and Left[0]>=0:
+            path_to.append(initial)
+            return self.are_connected(Left, end, not_walkable, path_to)
+
+        elif len(path_to)==0:
+            return False
+
+        else:
+            not_walkable.append(initial)
+            next_try = path_to[-1]
+            path_to = path_to[:-1]
+            return self.are_connected(next_try, end, not_walkable, path_to)
