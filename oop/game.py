@@ -3,85 +3,68 @@ import time
 import mapping
 import magic
 
-
-import random
-from functions import check_path
-from gnome import Gnome
-from human import Human
-from items import PickAxe, Sword, Amulet
+import items
 import player
 import actions
+import menu
 
 
 ROWS = 25
 COLUMNS = 80
 
 
-
-
-if __name__ == "__main__":
-        # initial parameters
-        level = 0
-        # initial locations may be random generated
-        player = Human('Maxi',(random.randint(0, COLUMNS-1), random.randint(0, ROWS-1)),None)
-        gnome = Gnome('Basic', (random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)), None)
-        pickaxe = PickAxe('PickAxe','7')
-        sword = Sword('Sword','/',5,10)
-        amulet = Amulet('Amulet','8')
-
-        dungeon = mapping.Dungeon(ROWS, COLUMNS, 3)
-        dungeon.add_item(pickaxe)
-        dungeon.add_item(sword, 2)
-        dungeon.add_item(amulet)
+def game_loop(dungeon: mapping.Dungeon, player: player.Player, gnome: player.Player, levels: int = 3):
+        """
+        The game_loop function is the main function of the game. It is responsible for
+        the main loop of the game, which includes rendering the map, reading user input and
+        doing all other necessary actions. The function also checks if player can get out 
+        of dungeon or not.
         
-        check_path(dungeon,(random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)) ,(random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)) )
-            
-        # Agregarle cosas al dungeon, cosas que no se creen automáticamente al crearlo (por ejemplo, ya se crearon las escaleras).
+        :param dungeon:mapping.Dungeon: Check the player's position in the dungeon
+        :param player:player.Player: Human player object
+        :param gnome:player.Player: Gnome player object
+        :param levels:int=3: Default number of levels in the dungeon
+        """
+        # create fixed items
+        sword = items.Sword('Sword','∫',5,10)
+        amulet = items.Amulet('Amulet','◊')
+        
+        # add fixed items to the dungeon
+        dungeon.add_item(sword, 2)
+        dungeon.add_item(amulet, levels)
 
+        
+        # main game development
         turns = 0
-        while dungeon.level >= 0:
+        regen = 0
+        while dungeon.level >= 0 and player.get_hp() > 0:
             turns += 1
             # render map
+            print('You were teleported into the dungeon. Try to escape!')
             dungeon.render(player, gnome)
-            
             # read key
             key = magic.read_single_keypress()
-            
-
             # move player and/or gnomes
-            if key[-1] == 'w':  
-                actions.move_up(dungeon, player)
-            if key[-1] == 'd': 
-                actions.move_right(dungeon, player)
-            if key[-1] == 's':
-                actions.move_down(dungeon, player)
-            if key[-1] == 'a':
-                actions.move_left(dungeon, player)
-            actions.move_gnome(dungeon, player, gnome)
-            
-            # Hacer algo con keys:
-            if key[-1] == 'v':
-                if dungeon.loc(player.loc()) == mapping.STAIR_DOWN:
-                    actions.descend_stair(dungeon,player)
-                elif dungeon.loc(player.loc()) == mapping.STAIR_UP:
-                    actions.climb_stair(dungeon, player)
-            
+            actions.move_to(dungeon, player, key, gnome)
+            actions.move_gnome(dungeon, gnome)
+            # pick up items
             actions.pickup(dungeon, player)
+            # attack and regenerate
+            actions.attack(player, gnome)
+            regen = actions.regenerate(player, gnome, regen)
         
-            
-        
-            # print(type(dungeon.get_items((50,20))[0]))
-            
-        if dungeon.level == -1 and type(player.get_treasure() == Amulet):
+        # checks if player can get out of the dungeon or not
+        if dungeon.level == -1 and type(player.get_treasure()) == items.Amulet:
             print('You win!')
         else:
-            print('You were killed by lightning!')
+            if dungeon.level == -1:
+                print('You were killed by lightning!')
+            elif player.get_hp() <= 0:
+                print('You died! Get stronger for next time!')
             print('GAME OVER')
-            
+            print('')
         
-            
-
-
-        # Salió del loop principal, termina el juego
+        menu.call()
+        # Out of principal loop, game ends
 
     

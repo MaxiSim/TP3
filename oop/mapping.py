@@ -1,9 +1,9 @@
 import random
 from typing import Optional
 
-from sympy import Le
+# from sympy import Le
 from human import Human
-
+from gnome import Gnome
 import player
 import items
 
@@ -111,7 +111,7 @@ class Level:
         
         # gnome: player.Player
 
-    def render(self, player: player.Player, gnome: player.Player, level: int):
+    def render(self, player: Human, gnome: Gnome, level: int):
         """Draw the map onto the terminal, including player and items. Player must have a loc() method, returning its
         location, and a face attribute. All items in the map must have a face attribute which is going to be shown. If
         there are multiple items in one location, only one will be rendered.
@@ -123,7 +123,7 @@ class Level:
             for j, cell in enumerate(row):
                 if (j, i) == player.loc():
                     print(player.face, end='')
-                elif (j,i) == gnome.loc():
+                elif (j,i) == gnome.loc() and gnome.get_alive() == True:
                     print(gnome.face, end = '')
                 elif (j, i) in self.items:
                     print(self.items[(j, i)][0].face, end='')
@@ -131,7 +131,8 @@ class Level:
                     print(cell.face, end='')
             print("|")
         print("-" + "-" * len(self.tiles[0]) + "-")
-        print(f'Player:{player}     HP:{player.hp}      Location:{player.location}      Level: {level}')
+        print(f'Player:{player}  HP:{player.hp}  Gnome HP:{gnome.hp}  Location:{player.location}  Level: {level}')
+        print(f'''Inventory:{player.get_inventory()}''')
 
     def is_walkable(self, location: Location):
         """Check if a player can walk through a given location."""
@@ -176,60 +177,58 @@ class Level:
         j, i = xy
         if self.tiles[i][j] is WALL:
             self.tiles[i][j] = AIR
+            
 
-    def is_free(self, xy: Location) -> bool:
-        """Check if a given location is free of other entities."""
-        # completar
-        raise NotImplementedError
-
-    def are_connected(self, initial: Location, end: Location,  not_walkable : list = [], path_to: list = []) -> bool:
-        """Check if there is walkable path between initial location and end location."""
-        # if len(self.get_path(initial, end)) == 0:
-        #     return False
-       
+    def are_connected(self, initial: Location, end: Location,  not_walkable : list, path_to: list) -> bool:
+        """
+        The are_connected function takes in an initial location,
+        the end location and two empty lists.
+        It returns 'Path found' if there is a path between initial and end locations, 'No path' otherwise.
+        
+        :param self: Reference the class itself
+        :param initial:Location: Startpoint of the search for a path from initial to end
+        :param end:Location: Set the goal location for the path
+        :param not_walkable:list: Store the locations that have been checked and have a dead end
+        :param path_to:list: Keep track of the path that has been traveled
+        :return: A string
+        """
+        
+        if initial == end:
+                    path_to.append(end)
+                    return "Path found"
+        
         Up = (initial[0], initial[1]-1)
         Right = (initial[0]+1, initial[1])
         Down = (initial[0], initial[1]+1)
         Left = (initial[0]-1, initial[1])
 
-        # d = [Up, Right, Down, Left]
-        # result = False
+        if self.is_walkable(Up) and (Up not in path_to) and (Up not in not_walkable) and Up[1]>=0:
+            path_to.append(initial)
+            return self.are_connected(Up, end, not_walkable, path_to)
 
-        # for direction in d:
-        #     if self.is_walkable(direction):
-        #         if direction not in not_walkable:
-        #             t = self.are_connected(direction, end, not_walkable + initial , path_to + initial)
-        #             if t:
-        #                 return True 
-        # return result
-      
-        if initial == end:
-                    path_to.append(end)
-                    return True
-        
+        elif self.is_walkable(Right) and (Right not in path_to) and (Right not in not_walkable) and Right[0]<80:
+            path_to.append(initial)
+            return self.are_connected(Right, end, not_walkable, path_to)
+
+        elif self.is_walkable(Down) and (Down not in path_to) and (Down not in not_walkable) and Down[1]<25:
+            path_to.append(initial)
+            return self.are_connected(Down, end, not_walkable, path_to)
+            
+        elif self.is_walkable(Left) and (Left not in path_to) and (Left not in not_walkable) and Left[0]>=0:
+            path_to.append(initial)
+            return self.are_connected(Left, end, not_walkable, path_to)
+
+        elif len(path_to)==0:
+            not_walkable.clear()
+            path_to.clear()
+            return "No path"
+
         else:
-            if self.is_walkable(Up) == True and Up not in path_to and Up not in not_walkable:
-                path_to.append(initial)
-                return self.are_connected(Up, end, not_walkable, path_to)
-            elif self.is_walkable(Right) == True and Right not in path_to and Right not in not_walkable:
-                path_to.append(initial)
-                return self.are_connected(Right, end, not_walkable, path_to)
-            elif self.is_walkable(Down) == True and Down not in path_to and Down not in not_walkable:
-                path_to.append(initial)
-                return self.are_connected(Down, end, not_walkable, path_to)
-            elif self.is_walkable(Left) == True and Left not in path_to and Left not in not_walkable:
-                path_to.append(initial)
-                return self.are_connected(Left, end, not_walkable, path_to)
-            elif (not self.is_walkable(Up) or Up in not_walkable)and (not self.is_walkable(Right) or Right in not_walkable) and (not self.is_walkable(Down) or Down in not_walkable) and (not self.is_walkable(Left) or Left in not_walkable):
-                if len(path_to) == 0:
-                    return False
-                else:
-                    not_walkable.append(initial)
-                    return self.are_connected(path_to[0], end, not_walkable, path_to = [])
-
-    def get_path(self, initial: Location, end: Location) -> list:
-        """Return a sequence of locations between initial location and end location, if it exits."""
-        pass
+            not_walkable.append(initial)
+            next_try = path_to[-1]
+            path_to = path_to[:-1]
+            return self.are_connected(next_try, end, not_walkable, path_to)
+        
         
 
 class Dungeon:
@@ -312,15 +311,29 @@ class Dungeon:
         return self.dungeon[self.level].is_free(xy)
 
     def set_level(self, value):
+        """
+        The set_level function increments the level attribute by 1 if value is equal to 1, 
+        or decreases it by one if value is equal to 0.
+        
+        :param self: Refer to the object itself
+        :param value: Determine if the level should be increased or decreased
+        :return: None
+        """
         if value == 1:
             self.level += 1
         elif value == 0:
             self.level -= 1
     
     def get_level(self):
+        """
+        The get_level function returns the current level of the dungeon.
+        
+        :param self: Access the class attributes
+        :return: The current level of the dungeon
+        """
         return self.level
     
-    def are_connected(self, initial: Location, end: Location) -> bool:
+    def are_connected(self, initial: Location, end: Location, not_walkable: list, path_to: list) -> bool:
         """Check if two locations are connected. See Level.are_connected()."""
-        return self.dungeon[self.level].are_connected(initial, end)
+        return self.dungeon[self.level].are_connected(initial, end, not_walkable, path_to)
     

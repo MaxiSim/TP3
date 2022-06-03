@@ -1,13 +1,11 @@
-from player import Player
+import menu
+
+def main():
+    """
+    Main function of the game. It calls the menu function in order for the user to start playing.
+    """
+    menu.call()
+
 
 if __name__ == '__main__':
-    xy = [0,0]
-    player = Player('maxi',xy)
-    # Recibe el evento del teclado y mueve al player
-    # Moverse
-    xy[0] += 1
-    xy[1] += 1
-    
-    player.move_to(xy)
-    
-    print(player.loc())
+    main()

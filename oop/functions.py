@@ -1,25 +1,26 @@
-import player
 import mapping
-import random
-# from game import ROWS, COLUMNS
+import sys
+sys.setrecursionlimit(10000)
 
-# def get_spawn(columns, rows)-> tuple:
-    # xy = (random.randint(0,columns), random.randint(0,rows))
-    # return xy
-
-def check_path(dungeon: mapping.Dungeon, initial: tuple, end: tuple):
-    if dungeon.are_connected(initial, end) == True:
-        print('entra')
-        # player.move_to(initial)
-        # dungeon.add_item(pickaxe,0, end)
+def check_path(dungeon: mapping.Dungeon):
+    """
+    The check_path function checks that two locations are connected.
+    
+    :param dungeon:mapping.Dungeon: Access the dungeon's map
+    :return: a and b, two connected coordinates in the dungeon.
+    """
+    a = dungeon.find_free_tile()
+    b = dungeon.find_free_tile()
+    not_walkable = []
+    path_to = []
+    result = dungeon.are_connected(a,b, not_walkable, path_to)
+    while result != "Path found" :
+        not_walkable.clear()
+        path_to.clear()
+        a = dungeon.find_free_tile()
+        b = dungeon.find_free_tile()
         
-    elif dungeon.are_connected(initial, end) == False:
-        # return 
-        print('entra en false')
-        # check_path(dungeon, (random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)), (random.randint(0,COLUMNS-1), random.randint(0,ROWS-1)))
-        
-    else:
-        print('no entra')
+    return a,b
     
         
     
