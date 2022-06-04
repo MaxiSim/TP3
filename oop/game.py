@@ -37,10 +37,10 @@ def game_loop(dungeon: mapping.Dungeon, player: player.Player, gnome: player.Pla
         # main game development
         turns = 0
         regen = 0
+        print('You were teleported into the dungeon. Try to escape!')
         while dungeon.level >= 0 and player.get_hp() > 0:
             turns += 1
             # render map
-            print('You were teleported into the dungeon. Try to escape!')
             dungeon.render(player, gnome)
             # read key
             key = magic.read_single_keypress()

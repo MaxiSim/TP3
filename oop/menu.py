@@ -15,6 +15,7 @@ def rules():
     print('''
     The rules are simple:   
     -To move use w(up), a(left), s(down), d(right). 
+    -Pressing any other key will not move the player, but will allow the gnome to move.
     -To pick up items, just run over them. 
     -To attack enemies move onto them, and if you have a weapon('/'), you can deal extra damage.
     -To break down walls, just run over them while holding the pickaxe('7').
